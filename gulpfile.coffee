@@ -19,6 +19,9 @@ preparation = [
   './app/manifest.json'
 ]
 
+gulp.task 'clean', ->
+  shell.rm('-rf', ['build', 'dist'])
+
 gulp.task 'jade', ->
   gulp.src './app/jade/**/*.jade'
     .pipe changed('./build')
@@ -36,7 +39,6 @@ gulp.task 'coffee', ->
     .pipe notify('coffee: <%= file.relative %>')
 
 gulp.task 'prepare', ->
-  shell.rm('-rf', ['build', 'dist'])
   gulp.src preparation, {base: './app'}
     .pipe gulp.dest('./build/')
     .pipe notify('preparation: <%= file.relative %>')
@@ -67,6 +69,7 @@ gulp.task 'watch', ->
 
 gulp.task 'release', ->
   runSeq(
+    'clean',
     'prepare',
     'build',
     'pack'
@@ -74,6 +77,7 @@ gulp.task 'release', ->
 
 gulp.task 'dev', ->
   runSeq(
+    'clean',
     'prepare',
     ['build', 'watch']
   )
